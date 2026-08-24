@@ -4,8 +4,8 @@ services:
     env: node
     plan: free
     region: oregon
-    buildCommand: npm run build
-    startCommand: npm start
+    buildCommand: npm install && npm --prefix server install && npm --prefix client install --include=dev && npm --prefix client run build
+    startCommand: node server/index.js
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
