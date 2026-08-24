@@ -10,7 +10,7 @@ const inMemoryStore = {
 let isConnectedToMongo = false;
 
 const connectDB = async () => {
-  const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/solarpv_ems';
+  const mongoURI = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/solarpv_ems';
   try {
     const conn = await mongoose.connect(mongoURI, {
       serverSelectionTimeoutMS: 2000,

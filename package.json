@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "Design and Simulation of a Grid-Connected Solar PV Power Plant with Battery Energy Storage and Intelligent Energy Management System",
   "scripts": {
-    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "start": "node server/index.js",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "cd server && npm run dev",
     "client": "cd client && npm run dev",
-    "install:all": "npm install && cd server && npm install && cd ../client && npm install",
-    "build": "cd client && npm run build"
+    "install:all": "npm install && npm --prefix server install && npm --prefix client install",
+    "build": "npm --prefix server install && npm --prefix client install && npm --prefix client run build"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

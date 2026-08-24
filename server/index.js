@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const path = require('path');
 const { connectDB, isConnectedToMongo } = require('./config/db');
 
 dotenv.config();
@@ -17,7 +18,7 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Routes
+// API Routes
 const scenarioRoutes = require('./routes/scenarioRoutes');
 const simulationRoutes = require('./routes/simulationRoutes');
 const optimizerRoutes = require('./routes/optimizerRoutes');
@@ -34,6 +35,23 @@ app.get('/api/health', (req, res) => {
     database: isConnectedToMongo() ? 'MongoDB' : 'In-Memory Hybrid Store',
     version: '1.0.0',
     timestamp: new Date().toISOString()
+  });
+});
+
+// Production: Serve static assets from built Vite client
+const clientDistPath = path.join(__dirname, '../client/dist');
+app.use(express.static(clientDistPath));
+
+// Catch-all route to serve React index.html for client-side routing
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+  const indexPath = path.join(clientDistPath, 'index.html');
+  res.sendFile(indexPath, (err) => {
+    if (err) {
+      res.status(200).send('Solar PV Simulation Engine Backend API is active. Build the client using `npm run build` to view the UI.');
+    }
   });
 });
 
@@ -60,3 +78,4 @@ connectDB().then(() => {
     }
   });
 });
+
